@@ -3,7 +3,7 @@ package br.unibh.produtos.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record CreateProdutoRequestDTO(
+public record ProdutoCreateDTO(
         @NotNull(message = "O nome do produto é obrigatório")
         String nome,
         @NotNull(message = "A descrição do produto é obrigatória")

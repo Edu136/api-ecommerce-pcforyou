@@ -2,14 +2,15 @@ package br.unibh.produtos.dto;
 
 import br.unibh.produtos.entity.ProdutoStatus;
 
-import java.util.UUID;
+import java.util.List;
 
-public record ReponseCreateProdutoDTO(
+public record ProdutosResponseDTO(
         Long id,
         String nome,
         String descricao,
         Double preco,
         Integer quantidade,
-        ProdutoStatus status
+        ProdutoStatus status,
+        List<Long> idImages
 ) {
 }
