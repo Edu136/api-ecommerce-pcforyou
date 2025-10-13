@@ -2,11 +2,7 @@
 
 Este repositório contém o código-fonte do **backend** para o projeto **PCForYou**, um e-commerce de peças e computadores desenvolvido para a disciplina de desenvolvimento web na UniBH.
 
-<<<<<<< HEAD
 Esta API RESTful é responsável por toda a lógica de negócio, gerenciamento de produtos, usuários, endereços, controle de estoque e processamento de vendas. Ela foi projetada para ser consumida por uma aplicação frontend separada.
-=======
-Esta API RESTful é responsável por toda a lógica de negócio, gerenciamento de produtos, controle de estoque e processamento de vendas. Ela foi projetada para ser consumida por uma aplicação frontend separada.
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
 
 ---
 
@@ -33,11 +29,7 @@ Assim que o frontend estiver disponível, o link será adicionado aqui.
 
 1.  **Clone o repositório:**
     ```bash
-<<<<<<< HEAD
     git clone [https://github.com/Edu136/api-ecommerce-pcforyou](https://github.com/Edu136/api-ecommerce-pcforyou)
-=======
-    git clone https://github.com/Edu136/api-ecommerce-pcforyou
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
     ```
 
 2.  **Navegue até o diretório do projeto:**
@@ -56,7 +48,6 @@ Assim que o frontend estiver disponível, o link será adicionado aqui.
 
 ## 📖 Endpoints da API
 
-<<<<<<< HEAD
 A seguir, a documentação detalhada dos endpoints disponíveis.
 
 ### Produtos (`/produtos`)
@@ -65,14 +56,6 @@ Endpoints para gerenciar o catálogo de produtos.
 
 #### 1. Listar todos os produtos
 Retorna uma lista com todos os produtos disponíveis.
-=======
-A URL base para todos os endpoints é `/produtos`.
-
-### 1. Listar todos os produtos
-
-Retorna uma lista com todos os produtos disponíveis no e-commerce.
-
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
 * **Método:** `GET`
 * **URL:** `/produtos`
 * **Resposta de Sucesso (200 OK):**
@@ -81,7 +64,6 @@ Retorna uma lista com todos os produtos disponíveis no e-commerce.
         {
             "id": 1,
             "nome": "Placa de Vídeo RTX 4080",
-<<<<<<< HEAD
             "descricao": "Placa de vídeo de alta performance para jogos em 4K e aplicações gráficas intensivas.",
             "preco": 7500.00,
             "quantidade": 15,
@@ -99,47 +81,26 @@ Retorna uma lista de produtos filtrando pelo seu status (ex: "DISPONIVEL", "INDI
 * **Resposta de Sucesso (200 OK):**
     ```json
     [
-=======
-            "preco": 7500.00,
-            "quantidade": 15
-        },
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
         {
             "id": 2,
             "nome": "Processador Intel Core i9-13900K",
             "preco": 3899.99,
-<<<<<<< HEAD
             "quantidade": 25,
             "status": "DISPONIVEL",
             "idImages" : [1,2]
-=======
-            "quantidade": 25
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
         }
     ]
     ```
 
-<<<<<<< HEAD
 #### 3. Adicionar um novo produto
 Cadastra um novo produto no catálogo da loja.
-=======
-<br/>
-
-### 2. Adicionar um novo produto
-
-Cadastra um novo produto no catálogo da loja.
-
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
 * **Método:** `POST`
 * **URL:** `/produtos/add`
 * **Corpo da Requisição (Request Body):**
     ```json
     {
         "nome": "Memória RAM DDR5 16GB 5200MHz",
-<<<<<<< HEAD
         "descricao": "Memória RAM DDR5 de alta performance para jogos e aplicações pesadas.",
-=======
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
         "preco": 450.00,
         "quantidade": 80
     }
@@ -149,7 +110,6 @@ Cadastra um novo produto no catálogo da loja.
     {
         "id": 3,
         "nome": "Memória RAM DDR5 16GB 5200MHz",
-<<<<<<< HEAD
         "descricao": "Memória RAM DDR5 de alta performance para jogos e aplicações pesadas.",
         "preco": 450.00,
         "quantidade": 80,
@@ -190,30 +150,12 @@ Registra a venda de uma quantidade de um produto, diminuindo o estoque.
 * **Método:** `POST`
 * **URL:** `/produtos/vender/{id}`
     * Substitua `{id}` pelo ID do produto.
-=======
-        "preco": 450.00,
-        "quantidade": 80
-    }
-    ```
-* **Resposta de Erro (400 Bad Request):** Retornada se algum campo obrigatório não for enviado ou se os dados forem inválidos (ex: preço negativo).
-
-<br/>
-
-### 3. Vender um produto
-
-Registra a venda de uma determinada quantidade de um produto, diminuindo o valor do estoque.
-
-* **Método:** `POST`
-* **URL:** `/produtos/vender/{id}`
-    * Substitua `{id}` pelo ID do produto. Exemplo: `/produtos/vender/1`
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
 * **Corpo da Requisição (Request Body):**
     ```json
     {
         "quantidade": 1
     }
     ```
-<<<<<<< HEAD
 * **Resposta de Sucesso (200 OK):** Nenhum corpo de resposta.
 * **Respostas de Erro:**
     * **400 Bad Request:** Se a quantidade a ser vendida for maior que o estoque.
@@ -386,18 +328,10 @@ Remove uma imagem do banco de dados com base no seu ID.
     * Substitua `{id}` pelo ID da imagem a ser excluída.
 * **Resposta de Sucesso (204 No Content):** Nenhum corpo de resposta. O status indica que a exclusão foi bem-sucedida.
 * **Resposta de Erro (404 Not Found):** Retornada se a imagem com o `id` informado não for encontrada.
-=======
-* **Resposta de Sucesso (200 OK):** Nenhum corpo de resposta (vazio). O status `200 OK` indica que a operação foi bem-sucedida.
-* **Respostas de Erro:**
-    * **400 Bad Request:** Se a quantidade a ser vendida for maior que o estoque disponível.
-    * **404 Not Found:** Se o produto com o `id` informado não for encontrado.
-
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
 ---
 
 ## 📝 Estrutura dos DTOs
 
-<<<<<<< HEAD
 Os Data Transfer Objects (DTOs) são usados para transferir dados entre o cliente e o servidor.
 
 ### DTOs de Produto
@@ -418,38 +352,3 @@ Os Data Transfer Objects (DTOs) são usados para transferir dados entre o client
 
 ### DTOs de Imagem
 * **`ImagemProdutoCreateDTO`**: Usado para receber os dados do formulário de upload.
-=======
-Os Data Transfer Objects (DTOs) são usados para transferir dados entre o cliente (frontend) e o servidor (esta API).
-
-### `CreateProdutoRequestDTO`
-Usado para criar um novo produto.
-```java
-// br.unibh.produtos.dto.CreateProdutoRequestDTO
-public class CreateProdutoRequestDTO {
-    private String nome;
-    private Double preco;
-    private Integer quantidade;
-}
-```
-
-### `ReponseCreateProdutoDTO`
-Retornado após a criação de um produto.
-```java
-// br.unibh.produtos.dto.ReponseCreateProdutoDTO
-public class ReponseCreateProdutoDTO {
-    private Long id;
-    private String nome;
-    private Double preco;
-    private Integer quantidade;
-}
-```
-
-### `VenderProdutoRequestDTO`
-Usado para especificar a quantidade a ser vendida.
-```java
-// br.unibh.produtos.dto.VenderProdutoRequestDTO
-public class VenderProdutoRequestDTO {
-    private Integer quantidade;
-}
-```
->>>>>>> dbd70094e754c2fe4e568c7da2fa2ca4dd31df56
