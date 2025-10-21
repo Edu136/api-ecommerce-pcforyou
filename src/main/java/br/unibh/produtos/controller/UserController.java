@@ -8,6 +8,7 @@ import br.unibh.produtos.repository.UserRepository;
 import br.unibh.produtos.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +23,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity <Void> createUser(@Valid @RequestBody UserCreateDTO request) {
-        userService.createUser(request);
-        return ResponseEntity.ok().build();
+    @PostMapping("/add")
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO request) {
+        UserResponseDTO  responseDTO = userService.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users = userService.findAllUsers();
         return ResponseEntity.ok(users);

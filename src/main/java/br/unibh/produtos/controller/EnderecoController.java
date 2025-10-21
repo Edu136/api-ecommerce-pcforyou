@@ -1,11 +1,14 @@
 package br.unibh.produtos.controller;
 
+import br.unibh.produtos.dto.EnderecoBuscaDTO;
 import br.unibh.produtos.dto.EnderecoCreateDTO;
 import br.unibh.produtos.dto.EnderecoResponseDTO;
 import br.unibh.produtos.service.EnderecoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/enderecos")
@@ -14,6 +17,12 @@ public class EnderecoController {
 
     public EnderecoController(EnderecoService enderecoService) {
         this.enderecoService = enderecoService;
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<EnderecoResponseDTO>> getEnderecoById(@PathVariable Long id){
+        List<EnderecoResponseDTO> response = enderecoService.buscarEnderecoPorIdUsuario(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/add")

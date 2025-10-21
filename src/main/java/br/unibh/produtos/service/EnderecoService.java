@@ -1,11 +1,14 @@
 package br.unibh.produtos.service;
 
+import br.unibh.produtos.dto.EnderecoBuscaDTO;
 import br.unibh.produtos.dto.EnderecoCreateDTO;
 import br.unibh.produtos.dto.EnderecoResponseDTO;
 import br.unibh.produtos.entity.Endereco;
 import br.unibh.produtos.entity.User;
 import br.unibh.produtos.repository.EnderecoRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class EnderecoService {
@@ -81,5 +84,20 @@ public class EnderecoService {
         Endereco enderecoEncontrado = enderecoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
         enderecoRepository.delete(enderecoEncontrado);
+    }
+
+    public List<EnderecoResponseDTO> buscarEnderecoPorIdUsuario(Long id){
+        User userEncontrado = userService.findById(id);
+        List<Endereco> enderecos = enderecoRepository.findByUser(userEncontrado);
+        return enderecos.stream().map(endereco -> new EnderecoResponseDTO(
+                endereco.getId(),
+                endereco.getCep(),
+                endereco.getLogradouro(),
+                endereco.getNumero(),
+                endereco.getComplemento(),
+                endereco.getBairro(),
+                endereco.getCidade(),
+                endereco.getEstado()
+        )).toList();
     }
 }

@@ -19,7 +19,7 @@ public class UserService {
         this.passwordHasher = passwordHasher;
     }
 
-    public void createUser(UserCreateDTO user) {
+    public UserResponseDTO createUser(UserCreateDTO user) {
         if(userRepository.findUserByEmail(user.email()).isPresent()){
             throw new RuntimeException("Usuário já existe");
         }
@@ -34,6 +34,13 @@ public class UserService {
         userCreated.setName(user.nome());
         userCreated.setPassword(senhaEmHash);
         userRepository.save(userCreated);
+
+        return new UserResponseDTO(
+                userCreated.getId(),
+                userCreated.getEmail(),
+                userCreated.getName(),
+                List.of()
+        );
     }
 
     public boolean validaLogin (LoginRequestDTO req){
