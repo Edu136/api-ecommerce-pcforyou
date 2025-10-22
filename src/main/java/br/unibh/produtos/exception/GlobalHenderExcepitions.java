@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,16 @@ public class GlobalHenderExcepitions {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
+        Map<String, Object> body = Map.of(
+                "status", 400,
+                "error", "Bad Request",
+                "message", ex.getMessage()
+        );
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<Object> handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
         Map<String, Object> body = Map.of(
                 "status", 400,
                 "error", "Bad Request",

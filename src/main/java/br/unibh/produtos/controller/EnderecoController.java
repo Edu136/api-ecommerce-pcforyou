@@ -1,6 +1,5 @@
 package br.unibh.produtos.controller;
 
-import br.unibh.produtos.dto.EnderecoBuscaDTO;
 import br.unibh.produtos.dto.EnderecoCreateDTO;
 import br.unibh.produtos.dto.EnderecoResponseDTO;
 import br.unibh.produtos.service.EnderecoService;
@@ -12,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/enderecos")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class EnderecoController {
     private final EnderecoService enderecoService;
 

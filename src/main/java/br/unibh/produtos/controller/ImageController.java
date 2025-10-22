@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/images")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ImageController {
     private final ProdutoRepository produtoRepository;
     private final ImagemRepository imagemRepository;

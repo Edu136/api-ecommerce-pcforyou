@@ -169,9 +169,4 @@ public class ProdutoService {
 
         produtoRepository.delete(produtoExistente);
     }
-
-    public Produto findById(Long id){
-        return produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-    }
 }
