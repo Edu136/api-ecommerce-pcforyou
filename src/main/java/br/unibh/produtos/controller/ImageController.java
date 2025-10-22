@@ -28,6 +28,12 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+    @GetMapping("/first/{idProduto}")
+    public ResponseEntity<byte[]> getFirstImageByProdutoId(@PathVariable Long idProduto){
+        byte[] imageData = imageService.getFirstImageByProdutoId(idProduto);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageData);
+    }
+
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> upload(
             @Valid @ModelAttribute ImagemProdutoCreateDTO request,
