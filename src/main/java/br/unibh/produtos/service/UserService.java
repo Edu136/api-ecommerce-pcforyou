@@ -74,4 +74,8 @@ public class UserService {
         user.setPassword(senhaEmHash);
         userRepository.save(user);
     }
+
+    public User findByEmail(String email){
+        return userRepository.findUserByEmail(email).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
 }

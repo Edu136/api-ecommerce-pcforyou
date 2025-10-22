@@ -32,8 +32,6 @@ public class ProdutoController {
         return ResponseEntity.ok(produtos);
     }
 
-
-
     @PostMapping("/add")
     public ResponseEntity<ProdutoCreateResponseDTO> createProduto (@Valid @RequestBody ProdutoCreateDTO request){
         ProdutoCreateResponseDTO response = produtoService.createProduto(request);

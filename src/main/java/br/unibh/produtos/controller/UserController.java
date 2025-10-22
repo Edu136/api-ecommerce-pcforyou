@@ -4,6 +4,7 @@ import br.unibh.produtos.dto.UserChangePasswordDTO;
 import br.unibh.produtos.dto.UserCreateDTO;
 import br.unibh.produtos.dto.LoginRequestDTO;
 import br.unibh.produtos.dto.UserResponseDTO;
+import br.unibh.produtos.entity.User;
 import br.unibh.produtos.repository.UserRepository;
 import br.unibh.produtos.service.UserService;
 import jakarta.validation.Valid;
@@ -39,7 +40,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login (@Valid @RequestBody LoginRequestDTO request){
         if(userService.validaLogin(request)){
-            return ResponseEntity.ok().build();
+            User user = userService.findByEmail(request.email());
+            return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.status(401).body("Unauthorized");
         }
