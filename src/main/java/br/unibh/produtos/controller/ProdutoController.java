@@ -33,8 +33,8 @@ public class ProdutoController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProdutoCreateResponseDTO> createProduto (@Valid @RequestBody ProdutoCreateDTO request){
-        ProdutoCreateResponseDTO response = produtoService.createProduto(request);
+    public ResponseEntity<ProdutosResponseDTO> createProduto (@Valid @RequestBody ProdutoCreateDTO request){
+        ProdutosResponseDTO response = produtoService.createProduto(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -45,8 +45,8 @@ public class ProdutoController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<ProdutoCreateResponseDTO> editarProduto(@PathVariable Long id, @RequestBody ProdutoEditDTO request) {
-        ProdutoCreateResponseDTO response = produtoService.editarProduto(id, request);
+    public ResponseEntity<ProdutosResponseDTO> editarProduto(@PathVariable Long id, @RequestBody ProdutoEditDTO request) {
+        ProdutosResponseDTO response = produtoService.editarProduto(id, request);
         return ResponseEntity.ok(response);
     }
 

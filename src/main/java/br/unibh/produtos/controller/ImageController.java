@@ -6,10 +6,14 @@ import br.unibh.produtos.repository.ImagemRepository;
 import br.unibh.produtos.repository.ProdutoRepository;
 import br.unibh.produtos.service.ImageService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +23,8 @@ import java.util.List;
 @RequestMapping("/images")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ImageController {
+
+
     private final ProdutoRepository produtoRepository;
     private final ImagemRepository imagemRepository;
     private final ImageService imageService;
@@ -38,21 +44,22 @@ public class ImageController {
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> upload(
             @Valid @ModelAttribute ImagemProdutoCreateDTO request,
-            @RequestParam("file") MultipartFile file) throws IOException{
+            @RequestParam("file") MultipartFile file) {
+        try {
+            imageService.salvarImagem(
+                    request.idProduto(),
+                    request.nomeDoArquivo(),
+                    file
+            );
 
-        var produto = produtoRepository.findById(request.idProduto())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+            return ResponseEntity.ok("Imagem salva com sucesso!");
 
-        var imagem = new ImagemProduto();
-        imagem.setProduto(produto);
-        imagem.setNomeArquivo(
-                request.nomeDoArquivo() != null ? request.nomeDoArquivo() : file.getOriginalFilename()
-        );
-        imagem.setImagem(file.getBytes());
-
-        imagemRepository.save(imagem);
-        return ResponseEntity.ok("Imagem salva com sucesso!");
+        } catch (RuntimeException | IOException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
+
 
     @PostMapping(value = "/add/multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadMultiple(

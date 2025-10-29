@@ -25,7 +25,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/add")
+    @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO request) {
         UserResponseDTO  responseDTO = userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -38,13 +38,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login (@Valid @RequestBody LoginRequestDTO request){
-        if(userService.validaLogin(request)){
-            User user = userService.findByEmail(request.email());
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
+    public ResponseEntity<UserResponseDTO> login (@Valid @RequestBody LoginRequestDTO request){
+        UserResponseDTO responseDTO = userService.validaLogin(request);
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PatchMapping("/editPassword/{id}")

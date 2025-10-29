@@ -13,6 +13,8 @@ public record ProdutoCreateDTO(
         Double preco,
         @NotNull(message = "A quantidade do produto é obrigatória")
         @Positive(message = "A quantidade do produto deve ser positiva")
-        Integer quantidade
+        Integer quantidade,
+        @NotNull(message = "A categoria do produto é obrigatória")
+        Long categoriaId
         ){
 }

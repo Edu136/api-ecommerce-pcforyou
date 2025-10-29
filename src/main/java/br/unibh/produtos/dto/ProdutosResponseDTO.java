@@ -11,6 +11,7 @@ public record ProdutosResponseDTO(
         Double preco,
         Integer quantidade,
         ProdutoStatus status,
-        List<Long> idImages
+        List<Long> idImages,
+        String nomeCategoria
 ) {
 }

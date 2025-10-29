@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,11 +18,15 @@ import java.util.List;
 
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String name;
     private String password;
+
     @OneToMany(mappedBy = "user")
     private List<Endereco> endereco;
+
+    @OneToMany(mappedBy = "user")
+    private List<Pedido> pedidos = new ArrayList<>();
 }

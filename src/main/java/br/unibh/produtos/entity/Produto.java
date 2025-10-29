@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Produto {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String descricao;
@@ -23,6 +23,18 @@ public class Produto {
     private Integer quantidade;
     @Enumerated(EnumType.STRING)
     private ProdutoStatus status;
+
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ImagemProduto> imagens = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
+    @OneToMany(
+            mappedBy = "produto",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private List<ItemPedido> itens = new ArrayList<>();
 }

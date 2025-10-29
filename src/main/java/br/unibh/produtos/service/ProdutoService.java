@@ -1,62 +1,107 @@
 package br.unibh.produtos.service;
 
 import br.unibh.produtos.dto.*;
+import br.unibh.produtos.entity.Categoria;
 import br.unibh.produtos.entity.Produto;
 import br.unibh.produtos.entity.ProdutoStatus;
+import br.unibh.produtos.repository.CategoriaRepository;
+import br.unibh.produtos.repository.ImagemIdProjection;
 import br.unibh.produtos.repository.ImagemRepository;
 import br.unibh.produtos.repository.ProdutoRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
     private final ImageService imageService;
+    private final ImagemRepository imagemRepository;
+    private final CategoriaRepository categoriaRepository;
 
 
-    public ProdutoService(ProdutoRepository produtoRepository, ImageService imageService) {
+    public ProdutoService(ProdutoRepository produtoRepository, ImageService imageService, ImagemRepository imagemRepository, CategoriaRepository categoriaRepository) {
         this.produtoRepository = produtoRepository;
         this.imageService = imageService;
+        this.imagemRepository = imagemRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
+    @Transactional
+    public ProdutosResponseDTO createProduto(ProdutoCreateDTO request) {
+        Categoria categoria = categoriaRepository.findById(request.categoriaId())
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
-    public ProdutoCreateResponseDTO createProduto(ProdutoCreateDTO request) {
         Produto novoProduto = new Produto();
         novoProduto.setNome(request.nome());
         novoProduto.setDescricao(request.descricao());
         novoProduto.setPreco(request.preco());
         novoProduto.setQuantidade(request.quantidade());
         novoProduto.setStatus(ProdutoStatus.DISPONIVEL);
+        novoProduto.setCategoria(categoria);
 
         produtoRepository.save(novoProduto);
-        return new ProdutoCreateResponseDTO(
+        return new ProdutosResponseDTO(
                 novoProduto.getId(),
                 novoProduto.getNome(),
                 novoProduto.getDescricao(),
                 novoProduto.getPreco(),
                 novoProduto.getQuantidade(),
-                novoProduto.getStatus()
+                novoProduto.getStatus(),
+                Collections.emptyList(),
+                novoProduto.getCategoria().getNomeCategoria()
         );
     }
 
+    @Transactional(readOnly = true)
     public List<ProdutosResponseDTO> getAllProdutos() {
+
         List<Produto> produtos = produtoRepository.findAll();
+
+        if (produtos.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> produtoIds = produtos.stream().map(Produto::getId).toList();
+
+        List<ImagemIdProjection> imagens = imagemRepository.findImagemIdsByProdutoIds(produtoIds);
+
+        Map<Long, List<Long>> imagensPorProdutoId = imagens.stream()
+                .collect(Collectors.groupingBy(
+                        ImagemIdProjection::getProdutoId,
+                        Collectors.mapping(ImagemIdProjection::getImagemId, toList())
+                ));
+
         return produtos.stream()
-                .map(produto -> new ProdutosResponseDTO(
-                        produto.getId(),
-                        produto.getNome(),
-                        produto.getDescricao(),
-                        produto.getPreco(),
-                        produto.getQuantidade(),
-                        produto.getStatus(),
-                        produto.getImagens().stream().map(imagem -> imagem.getId()).toList()
-                ))
+                .map(produto -> {
+
+                    String nomeCategoria = null;
+                    if(produto.getCategoria() != null){
+                        nomeCategoria = produto.getCategoria().getNomeCategoria();
+                    }
+
+                    return new ProdutosResponseDTO(
+                            produto.getId(),
+                            produto.getNome(),
+                            produto.getDescricao(),
+                            produto.getPreco(),
+                            produto.getQuantidade(),
+                            produto.getStatus(),
+                            imagensPorProdutoId.getOrDefault(produto.getId(), Collections.emptyList()),
+                            nomeCategoria
+                    );
+                })
                 .toList();
     }
 
-
+    @Transactional(readOnly = true)
     public List<ProdutosResponseDTO> getProdutosByStatus(String status) {
         ProdutoStatus produtoStatus;
         try {
@@ -66,19 +111,44 @@ public class ProdutoService {
         }
 
         List<Produto> produtos = produtoRepository.findByStatus(produtoStatus);
+
+        if (produtos.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> produtoIds = produtos.stream().map(Produto::getId).toList();
+
+        List<ImagemIdProjection> imagens = imagemRepository.findImagemIdsByProdutoIds(produtoIds);
+
+        Map<Long, List<Long>> imagensPorProdutoId = imagens.stream()
+                .collect(Collectors.groupingBy(
+                        ImagemIdProjection::getProdutoId,
+                        Collectors.mapping(ImagemIdProjection::getImagemId, toList())
+                ));
+
         return produtos.stream()
-                .map(produto -> new ProdutosResponseDTO(
-                        produto.getId(),
-                        produto.getNome(),
-                        produto.getDescricao(),
-                        produto.getPreco(),
-                        produto.getQuantidade(),
-                        produto.getStatus(),
-                        produto.getImagens().stream().map(imagem -> imagem.getId()).toList()
-                ))
-                .toList();
+                .map(produto -> {
+
+                    String nomeCategoria = null;
+                    if(produto.getCategoria() != null){
+                        nomeCategoria = produto.getCategoria().getNomeCategoria();
+                    }
+
+                    return new ProdutosResponseDTO(
+                            produto.getId(),
+                            produto.getNome(),
+                            produto.getDescricao(),
+                            produto.getPreco(),
+                            produto.getQuantidade(),
+                            produto.getStatus(),
+                            imagensPorProdutoId.getOrDefault(produto.getId(), Collections.emptyList()),
+                            nomeCategoria
+                        );
+                    })
+                    .toList();
     }
 
+    @Transactional
     public void venderProduto(Long produtoId, ProdutoVenderRequestDTO requestDTO) {
         Produto produto = produtoRepository.findById(produtoId)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
@@ -99,7 +169,8 @@ public class ProdutoService {
         produtoRepository.save(produto);
     }
 
-    public ProdutoCreateResponseDTO editarProduto(Long id, ProdutoEditDTO request) {
+    @Transactional
+    public ProdutosResponseDTO editarProduto(Long id, ProdutoEditDTO request) {
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
@@ -143,21 +214,37 @@ public class ProdutoService {
 
         produtoRepository.save(produtoExistente);
 
-        return new ProdutoCreateResponseDTO(
+        List<Long> imagemIds = imagemRepository.findImagemIdsByProdutoIds(Collections.singletonList(id))
+                .stream()
+                .map(ImagemIdProjection::getImagemId)
+                .toList();
+
+        String nomeCategoria = null;
+        if(produtoExistente.getCategoria() != null){
+            nomeCategoria = produtoExistente.getCategoria().getNomeCategoria();
+        }
+
+        return new ProdutosResponseDTO(
                 produtoExistente.getId(),
                 produtoExistente.getNome(),
                 produtoExistente.getDescricao(),
                 produtoExistente.getPreco(),
                 produtoExistente.getQuantidade(),
-                produtoExistente.getStatus()
+                produtoExistente.getStatus(),
+                imagemIds,
+                nomeCategoria
         );
     }
 
+    @Transactional
     public void deleteProduto(Long id) {
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
-        List<Long> imagensIds = produtoExistente.getImagens().stream().map(imagem -> imagem.getId()).toList();
+        List<Long> imagensIds = imagemRepository.findImagemIdsByProdutoIds(Collections.singletonList(id))
+                .stream()
+                .map(ImagemIdProjection::getImagemId)
+                .toList();
 
         if (imagensIds.isEmpty()){
             produtoRepository.delete(produtoExistente);
